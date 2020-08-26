@@ -7,22 +7,64 @@
 
 use strict;
 use warnings;
-#use Getopt::Long;
+use Getopt::Long;
 
-#Getopt::Long::Configure(qw(:config gnu_getopt no_ignore_case));
-#GetOptions('0' => ...) or die "first-arg: Error in parsing options, aborting\n";
+my $opt_null = 0;
+my $opt_quote = 0;
 
-print @ARGV ? "$ARGV[0]\n" : "";
+Getopt::Long::Configure(qw/gnu_getopt no_ignore_case/);
+GetOptions(
+    '0' => \$opt_null,
+    'q' =>  \$opt_quote,
+) or die "first-arg: Error in parsing options, aborting\n";
+
+for (@ARGV ? ($ARGV[0]) : ()) {
+    if ($opt_quote) {
+        require String::ShellQuote;
+        print String::ShellQuote::shell_quote($_);
+    } else {
+        print;
+    }
+    print $opt_null ? "\0" : "\n";
+}
 
 # ABSTRACT: Print the first command-line argument to standard output
 # PODNAME:
 
 =head1 SYNOPSIS
 
+Usage:
+
+ % first-arg [option] [arg]...
+
+Examples:
+
  % first-arg "first arg" second third
  first arg
 
- % media-info `first-arg *`
+ # but usually useless to use with backtick
+ % media-info `first-arg *`         ; # problem with quoting
+ % media-info `first-arg -q *`      ; # problem with quoting
+ % ls | head -n1 | xargs media-info ; # problem with quoting
+
+ # use with shell's read
+ % first-arg * | ( read p && media-info "$p" )
 
 
 =head1 DESCRIPTION
+
+
+=head1 OPTIONS
+
+=head2 -q
+
+Shell-quote the argument.
+
+=head2 -0
+
+Print null character ("\0") after the argument, instead of newline ("\n").
+
+
+=head1 SEE ALSO
+
+L<last-arg>

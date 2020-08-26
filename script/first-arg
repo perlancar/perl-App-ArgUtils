@@ -1,0 +1,28 @@
+#!perl
+
+# AUTHORITY
+# DATE
+# DIST
+# VERSION
+
+use strict;
+use warnings;
+#use Getopt::Long;
+
+#Getopt::Long::Configure(qw(:config gnu_getopt no_ignore_case));
+#GetOptions('0' => ...) or die "first-arg: Error in parsing options, aborting\n";
+
+print @ARGV ? "$ARGV[0]\n" : "";
+
+# ABSTRACT: Print the first command-line argument to standard output
+# PODNAME:
+
+=head1 SYNOPSIS
+
+ % first-arg "first arg" second third
+ first arg
+
+ % media-info `first-arg *`
+
+
+=head1 DESCRIPTION
